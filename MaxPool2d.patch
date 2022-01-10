@@ -1,0 +1,28 @@
+--- /usr/local/lib/python3.5/dist-packages/torch/nn/modules/pooling.py
++++ /usr/local/lib/python3.5/dist-packages/torch/nn/modules/pooling.py
+@@ -16,10 +16,6 @@
+     If :attr:`padding` is non-zero, then the input is implicitly zero-padded on both sides
+     for :attr:`padding` number of points. :attr:`dilation` controls the spacing between the kernel points.
+     It is harder to describe, but this `link`_ has a nice visualization of what :attr:`dilation` does.
+-
+-    Note:
+-        When ceil_mode=True, sliding windows are allowed to go off-bounds if they start within the left padding
+-        or the input. Sliding windows that would start in the right padded region are ignored.
+ 
+     The parameters :attr:`kernel_size`, :attr:`stride`, :attr:`padding`, :attr:`dilation` can either be:
+ 
+@@ -61,12 +57,8 @@
+         https://github.com/vdumoulin/conv_arithmetic/blob/master/README.md
+     """
+ 
+-    kernel_size: _size_2_t
+-    stride: _size_2_t
+-    padding: _size_2_t
+-    dilation: _size_2_t
+-
+-    def forward(self, input: Tensor) -> Tensor:
++    @weak_script_method
++    def forward(self, input):
+         return F.max_pool2d(input, self.kernel_size, self.stride,
+                             self.padding, self.dilation, self.ceil_mode,
+                             self.return_indices)
